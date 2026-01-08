@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  name              String?
+  email             String   @unique
+  password          String
+  sendNotifications Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  startDate DateTime
+  category  Category
+  icon      String?
+  color     String?
+  active    Boolean  @default(true)
+  price     Float
+  // Example:  Every 3 months --> frequency = 3, period = MONTHLY
+  frequency Int      @default(1)
+  period    Period   @default(MONTHLY)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LegalDocument {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+enum Period {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum Category {
+  ENTERTAINMENT // Netflix, Spotify
+  SOFTWARE // Adobe, JetBrains, AI Tools
+  HEALTH // Gym, Supplements
+  FINANCE // Banking, Investments
+  TRANSPORT // Uber Pass, Car lease
+  EDUCATION // Courses, Books
+  UTILITIES // Rent, Phone, Internet
+  SHOPPING // Amazon Prime
+  OTHER
+}
