@@ -5,6 +5,7 @@ import {Sheet, SheetContent, SheetTitle, SheetTrigger} from "@/components/ui/she
 import { Button } from "@/components/ui/button"
 import { Menu, Snowflake } from "lucide-react"
 import { useState } from "react";
+import Image from "next/image";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 
@@ -22,7 +23,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Mobile Header */}
         <header className="lg:hidden border-b border-[#1e293b] bg-[#050b1a]/80 backdrop-blur-xl p-4 flex items-center justify-between sticky top-0 z-50">
           <div className="flex items-center gap-2">
-            <Snowflake className="w-6 h-6 text-[#00f3ff]" />
+            <Image
+              width={32}
+              height={32}
+              src="/logo.svg"
+              alt="SubZero Logo"
+              className="w-12 h-12 object-contain neon-text"
+            />
             <span className="text-xl font-bold text-[#00f3ff]">SUBZERO</span>
           </div>
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>

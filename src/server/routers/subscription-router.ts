@@ -80,7 +80,6 @@ export const subscriptionRouter = createTRPCRouter({
         schema: AiSubscriptionSchema,
         prompt: `Generate subscription details for "${input.name}". Use known pricing/branding if possible, otherwise estimate.`,
       });
-      console.log(result)
       return {
         ...result.object,
       };

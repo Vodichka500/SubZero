@@ -71,7 +71,10 @@ export function SubscriptionForm({
     },
     onError: (error) => {
       console.error(error)
-      toast.error("Couldn't generate details via AI. Try manual entry.")
+      toast.error(`
+        Sorry. Couldn't generate details via AI: ${error.message || "Unknown error"}.
+        Try manual entry.
+      `)
     }
   })
 

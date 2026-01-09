@@ -2,6 +2,15 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Snowflake, Sparkles, TrendingDown, Lock } from "lucide-react"
+import Image from "next/image";
+import {AppRoutes} from "@/routes";
+import { MobileMenu } from "@/components/features/landing/mobile-menu";
+
+const links = [
+  { href: AppRoutes.faq(), label: "FAQ" },
+  { href: AppRoutes.terms(), label: "Terms" },
+  { href: AppRoutes.privacy(), label: "Privacy" }
+]
 
 export default function LandingPage() {
   return (
@@ -10,22 +19,34 @@ export default function LandingPage() {
       <nav className="border-b border-[#1e293b] backdrop-blur-xl bg-[#050b1a]/80 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Snowflake className="w-8 h-8 text-[#00f3ff]" />
+            <Image
+              width={32}
+              height={32}
+              src="/logo.svg"
+              alt="SubZero Logo"
+              className="w-12 h-12 object-contain neon-text"
+            />
             <span className="text-2xl font-bold tracking-wide text-[#00f3ff] neon-text">SUBZERO</span>
           </div>
-          <div className="flex items-center gap-6">
-            <Link href="/faq" className="text-slate-400 hover:text-[#00f3ff] transition-colors">
-              FAQ
-            </Link>
-            <Link href="/terms" className="text-slate-400 hover:text-[#00f3ff] transition-colors">
-              Terms
-            </Link>
-            <Link href="/dashboard">
+          <div className="hidden md:flex items-center gap-6">
+            {
+              links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-slate-400 hover:text-[#00f3ff] transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))
+            }
+            <Link href={AppRoutes.dashboard()}>
               <Button className="bg-gradient-to-r from-[#00f3ff] to-[#0ea5e9] text-[#02040a] font-semibold hover:shadow-[0_0_20px_rgba(0,243,255,0.6)] transition-all">
                 Get Started
               </Button>
             </Link>
           </div>
+          <MobileMenu links={links}/>
         </div>
       </nav>
 
@@ -45,7 +66,7 @@ export default function LandingPage() {
           <p className="text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
             Track every subscription, analyze spending patterns with AI, and take control of your recurring expenses.
           </p>
-          <Link href="/dashboard">
+          <Link href={AppRoutes.dashboard()}>
             <Button
               size="lg"
               className="bg-gradient-to-r from-[#00f3ff] to-[#0ea5e9] text-[#02040a] font-bold text-lg px-8 py-6 hover:shadow-[0_0_30px_rgba(0,243,255,0.8)] transition-all"
@@ -95,22 +116,32 @@ export default function LandingPage() {
       <footer className="border-t border-[#1e293b] py-8 mt-20">
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Snowflake className="w-6 h-6 text-[#00f3ff]" />
+            <Image
+              width={32}
+              height={32}
+              src="/logo.svg"
+              alt="SubZero Logo"
+              className="w-12 h-12 object-contain neon-text"
+            />
             <span className="text-lg font-bold text-[#00f3ff]">SUBZERO</span>
           </div>
           <div className="flex items-center gap-6 text-sm text-slate-500">
-            <Link href="/faq" className="hover:text-[#00f3ff] transition-colors">
-              FAQ
-            </Link>
-            <Link href="/terms" className="hover:text-[#00f3ff] transition-colors">
-              Terms of Service
-            </Link>
-            <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4" />
-              <span>Secure & Private</span>
-            </div>
+            {
+              links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="hover:text-[#00f3ff] transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))
+            }
           </div>
         </div>
+        <p className="text-center text-[10px] text-slate-500 mt-4 uppercase tracking-[0.2em]">
+          © {new Date().getFullYear()} SubZero
+        </p>
       </footer>
     </div>
   )

@@ -11,6 +11,7 @@ import {api} from "@/app/_providers/trpc-provider";
 import {AsyncView} from "@/components/features/async-view";
 import {ProfileBadgeSkeleton} from "@/components/skeletons/profile-badge-skeleton";
 import {AppRoutes} from "@/routes";
+import Image from "next/image";
 
 interface SidebarProps {
   onLinkClick?: () => void
@@ -40,8 +41,16 @@ export function Sidebar({ onLinkClick }: SidebarProps) {
     <div className="flex flex-col h-full bg-[#050b1a]/80 backdrop-blur-xl border-r border-[#1e293b]">
       <div className="p-6 border-b border-[#1e293b]">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Snowflake className="w-8 h-8 text-[#00f3ff]" />
-          <span className="text-2xl font-bold tracking-wide text-[#00f3ff] neon-text">SUBZERO</span>
+          <Image
+            width={32}
+            height={32}
+            src="/logo.svg"
+            alt="SubZero Logo"
+            className="w-12 h-12 object-contain neon-text"
+          />
+          <span className="text-2xl font-bold tracking-wide text-[#00f3ff] neon-text">
+      SUBZERO
+    </span>
         </Link>
       </div>
 

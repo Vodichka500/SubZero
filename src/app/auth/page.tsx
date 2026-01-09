@@ -18,6 +18,7 @@ import {api} from "@/app/_providers/trpc-provider";
 import {toast} from "sonner";
 import {AppRoutes} from "@/routes"
 import { LoginFormValues, RegisterFormValues } from "@/lib/types"
+import Image from "next/image";
 
 
 
@@ -108,8 +109,14 @@ export default function AuthPage() {
             className="hidden lg:block space-y-6"
           >
             {/* ... (Оставлено без изменений для краткости) ... */}
-            <div className="flex items-center gap-3 mb-8">
-              <Snowflake className="w-16 h-16 text-[#00f3ff]" />
+            <div className="flex items-center gap-3">
+              <Image
+                width={32}
+                height={32}
+                src="/logo.svg"
+                alt="SubZero Logo"
+                className="w-24 h-24 object-contain neon-text"
+              />
               <span className="text-5xl font-bold text-[#00f3ff] neon-text tracking-wide">SUBZERO</span>
             </div>
             <h1 className="text-5xl font-bold text-white leading-tight">
