@@ -1,57 +1,179 @@
 # ❄️ SubZero
 
-> **Freeze unnecessary spending.**
-> Take control of all your subscriptions in one cool place.
+> **Freeze unnecessary spending.**  
+> A modern fullstack subscription management dashboard built as a code challenge solution.
 
-![Next.js](https://img.shields.io/badge/Next.js-15-black) ![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green) ![Prisma](https://img.shields.io/badge/Prisma-ORM-blue) ![tRPC](https://img.shields.io/badge/tRPC-TypeSafe-blueviolet) ![Status](https://img.shields.io/badge/Status-In%20Development-cyan)
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-blue)
+![tRPC](https://img.shields.io/badge/tRPC-TypeSafe-blueviolet)
+![Status](https://img.shields.io/badge/Status-Completed-success)
 
-## 📋 Overview
+---
 
-**SubZero** is a modern, responsive subscription management dashboard built to satisfy the requirements of a Fullstack Code Challenge. It helps users track recurring expenses, visualize their monthly spend, and categorize services automatically using AI.
+## 🚀 Live Demo
 
-The application features a distinct "Ice/Cyber" aesthetic using a dark mode UI with **Electric Cyan** accents.
+🔗 **Deployed application:**  
+https://sub-zero-bice.vercel.app/dashboard
+
+---
+
+## 📌 Overview
+
+**SubZero** is a fullstack CRUD application created as a solution for a **Fullstack Code Challenge**.  
+The project demonstrates modern frontend and backend practices using **Next.js**, **Supabase**, **tRPC**, and **NextAuth**.
+
+The application allows authenticated users to manage their subscriptions, track recurring expenses, and view analytics — while ensuring **strict user data isolation**.
+
+The UI follows a dark **Ice / Cyber** aesthetic with electric cyan accents and is fully responsive.
+
+---
 
 ## ✨ Key Features
 
--   **🔐 Secure Authentication:** User isolation via NextAuth.js (Credentials Provider).
--   **🤖 AI-Powered Auto-fill:** Enter a service name (e.g., "Netflix"), and the app automatically detects the category, color, and icon using generative AI models.
--   **📊 Dashboard Analytics:** Real-time calculation of monthly and yearly expenses.
--   **📱 Mobile First:** Fully responsive UI built with Shadcn UI and Tailwind CSS.
--   **⚡ End-to-End Type Safety:** Full typed communication from Database to UI using tRPC and Prisma.
+- **🔐 Authentication & Authorization**
+    - NextAuth.js with Credentials Provider
+    - Application is fully locked for unauthenticated users
+    - Each user can access **only their own data**
 
-## 🏗 Architecture & Tech Stack
+- **🧩 CRUD Functionality**
+    - Create, read, update, and delete subscriptions
+    - Server-side access control enforced at API level
 
-This project uses the **T3 Stack** philosophy (Next.js + tRPC + Prisma) paired with Supabase.
+- **📊 Analytics Dashboard**
+    - Monthly and yearly spending calculations
+    - Visual overview of recurring expenses
 
-### The Stack
-* **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
-* **Database:** [Supabase](https://supabase.com/) (PostgreSQL)
-* **ORM:** [Prisma](https://www.prisma.io/) (Schema management & Queries)
-* **Data Fetching:** [tRPC](https://trpc.io/) (E2E type-safe APIs)
-* **Authentication:** [NextAuth.js](https://next-auth.js.org/)
-* **UI Library:** [Shadcn UI](https://ui.shadcn.com/) + Tailwind CSS
-* **Forms:** [React Hook Form](https://react-hook-form.com/) + Zod 
-* **Types Auto Generation:** [zod-prisma-types](https://www.npmjs.com/package/zod-prisma-types) 
-* **AI Integration:** OpenAI API / Vercel AI SDK
+- **🤖 AI-powered Auto-fill**
+    - Enter a service name (e.g. “Netflix”)
+    - Category, icon, and color are detected automatically using AI
 
-### Architecture Decision: Why this stack?
-1.  **Supabase:** 
-2.  **tRPC:** Chosen over REST/GraphQL to provide seamless type safety between the backend functions and frontend components, speeding up development and reducing runtime errors.
-3.  **Prisma:** Used to interact with the Supabase Postgres instance, allowing for clean schema definition and type-safe database queries without raw SQL.
+- **📱 Mobile-first UI**
+    - Fully responsive layout
+    - Built with Shadcn UI and Tailwind CSS
 
-## 🚀 Render Strategies (Requirement Implementation)
+- **⚡ End-to-End Type Safety**
+    - Type-safe communication from database to UI using tRPC and Prisma
 
-As per the technical requirements, the application utilizes three distinct rendering strategies:
+---
 
-1.  **CSR (Client-Side Rendering):**
-    * *Location:* **Dashboard & Subscription List**.
-    * *Reason:* Highly interactive user data, real-time updates, and AI interactions require client-side state management.
-2.  **SSG (Static Site Generation):**
-    * *Location:* **FAQ Page (`/faq`)**.
-    * *Reason:* Static content that doesn't change between users. Prerendered at build time for maximum performance and SEO.
-3.  **SSR (Server-Side Rendering):**
-    * *Location:* **Terms of Service (`/terms`)**.
-    * *Reason:* Fetches the latest legal document version from the database on every request, ensuring the user always sees the most up-to-date legal text without rebuilding the app.
+## 🏗 Tech Stack & Architecture
 
-## 🛠 Getting Started
+The project follows the **T3 Stack philosophy** with a managed backend.
 
+### Stack
+
+- **Framework:** Next.js 16
+- **Database:** Supabase (PostgreSQL)
+- **ORM:** Prisma
+- **API Layer:** tRPC
+- **Authentication:** NextAuth.js
+- **UI:** Shadcn UI + Tailwind CSS
+- **Forms & Validation:** React Hook Form + Zod
+- **Schema Generation:** zod-prisma-types
+- **AI Integration:** OpenAI API (via Vercel AI SDK)
+
+---
+
+## 🧠 Architecture Decisions
+
+- **Supabase**  
+  Chosen as a managed PostgreSQL backend with easy deployment and free-tier support.
+
+- **tRPC instead of REST / GraphQL**  
+  Enables full end-to-end type safety, faster development, and fewer runtime errors.
+
+- **Prisma ORM**  
+  Provides a clean schema definition and type-safe database queries without raw SQL.
+
+- **Zod + React Hook Form**  
+  Ensures reliable form validation and predictable data flow. Automatic schema generation with zod-prisma-types reduces boilerplate.
+
+---
+
+## 🖥 Rendering Strategies (Challenge Requirement)
+
+The application intentionally demonstrates **three different rendering strategies**:
+
+| Page | Strategy | Description |
+|----|----|----|
+| `/dashboard` | CSR | Client-side rendered dashboard with interactive data |
+| `/faq` | SSG | Static page generated at build time |
+| `/terms` | SSR | Server-side rendered page, always showing the latest Terms |
+
+---
+
+## ✅ Requirements Checklist
+
+- [x] User authentication via NextAuth.js (Credentials Provider)
+- [x] CRUD operations with strict user access control
+- [x] Supabase as backend (PostgreSQL)
+- [x] Prisma ORM + tRPC 
+- [x] Next.js frontend
+- [x] At least three rendering strategies (CSR, SSG, SSR)
+- [x] Mobile-friendly responsive UI
+- [x] Deployed application (Vercel)
+
+---
+
+## 🛠 Getting Started (Local Development)
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Vodichka500/SubZero
+cd SubZero
+```
+### 2.  **Install dependencies:**
+```bash
+    npm install
+```
+### 3. Environment variables
+Create a .env file and provide the following:
+* Supabase database connection
+* NextAuth secret
+* OpenAI API key
+### 4. Database setup
+```bash
+    npm prisma:push
+    npm seed
+```
+
+### 5. Run the development server
+```bash
+    npm run dev
+```
+Open:
+```
+    http://localhost:3000
+```
+    
+    
+## 🖼 Screenshots
+
+### Landing Page
+Welcome users with a sleek introduction to SubZero's features.
+
+### Auth page
+Allows users to sign up and log in securely using credentials.
+
+### Dashboard
+Central hub for managing subscriptions, viewing analytics.
+
+### Dashboard - Calendar View
+Visual representation of subscription billing cycles.
+
+### Add Subscription
+Form to add new subscriptions with **_AI-powered_** auto-fill.
+
+### Settings
+User preferences and account management.
+
+### Mobile View Example
+Fully responsive design for seamless mobile experience.
+
+## 📄 License
+This project is licensed under the MIT License.
+
+## ‍💻 Author
+Uladzislau Kamisarau
+Created as part of a Fullstack Code Challenge.
