@@ -152,28 +152,32 @@ Open:
 
 ### Landing Page
 Welcome users with a sleek introduction to SubZero's features.
+<img width="1904" height="939" alt="image" src="https://github.com/user-attachments/assets/28413b8e-40b4-41cc-8af4-4604721d6ce8" />
 
 ### Auth page
 Allows users to sign up and log in securely using credentials.
+<img width="1920" height="929" alt="image" src="https://github.com/user-attachments/assets/773bed3a-1679-4c4d-9c14-044b5a3956d6" />
 
 ### Dashboard
 Central hub for managing subscriptions, viewing analytics.
-
-### Dashboard - Calendar View
-Visual representation of subscription billing cycles.
+<img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/3e3cb665-7b21-4a98-8c93-2d3c037f2316" />
 
 ### Add Subscription
 Form to add new subscriptions with **_AI-powered_** auto-fill.
+<img width="1920" height="933" alt="image" src="https://github.com/user-attachments/assets/a11d1b9b-5606-44c2-b2c2-409c01dac080" />
 
 ### Settings
 User preferences and account management.
+<img width="1899" height="933" alt="image" src="https://github.com/user-attachments/assets/1843049b-a4ff-4a05-886e-bd877ba552e0" />
 
-### Mobile View Example
+### Mobile View Example (Dashboard - Calendar View)
 Fully responsive design for seamless mobile experience.
+
+<img width="387" height="844" alt="image" src="https://github.com/user-attachments/assets/5787f70a-6c75-4cd0-827b-df75ab9658fe" />
 
 ## 📄 License
 This project is licensed under the MIT License.
 
 ## ‍💻 Author
-Uladzislau Kamisarau
-Created as part of a Fullstack Code Challenge.
+- Uladzislau Kamisarau
+- Created as part of a Fullstack Code Challenge.
