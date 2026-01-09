@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { ZodError } from "zod";
 import { prisma } from "@/lib/prisma";
-import { signInSchema } from "@/lib/zod";
+import { LoginSchema } from "@/lib/zod";
 import { verifyPassword } from "@/lib/password";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -14,7 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       authorize: async (credentials) => {
         try {
-          const { email, password } = await signInSchema.parseAsync(credentials);
+          const { email, password } = await LoginSchema.parseAsync(credentials);
 
           const user = await prisma.user.findUnique({
             where: { email },
