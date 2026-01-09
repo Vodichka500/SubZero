@@ -1,10 +1,12 @@
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Snowflake, Sparkles, TrendingDown, Lock } from "lucide-react"
+import { Snowflake, Sparkles, TrendingDown } from "lucide-react"
+import { MobileMenu } from "@/components/features/landing/mobile-menu";
+
 import Image from "next/image";
 import {AppRoutes} from "@/routes";
-import { MobileMenu } from "@/components/features/landing/mobile-menu";
+import Link from "next/link"
+
 
 const links = [
   { href: AppRoutes.faq(), label: "FAQ" },
@@ -96,7 +98,7 @@ export default function LandingPage() {
             </div>
             <h3 className="text-2xl font-bold text-white mb-3 tracking-wide">AI Analysis</h3>
             <p className="text-slate-400 leading-relaxed">
-              Smart auto-categorization and price detection. Just enter the name, we'll handle the rest.
+              Smart auto-categorization and price detection. Just enter the name, we&#39;ll handle the rest.
             </p>
           </Card>
 

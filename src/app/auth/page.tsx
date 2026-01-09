@@ -1,35 +1,53 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from "@/components/ui/card"
-import { Snowflake, Sparkles } from "lucide-react"
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { LoginSchema, RegisterSchema } from "@/lib/zod"
-import {api} from "@/app/_providers/trpc-provider";
 import {toast} from "sonner";
+import { Snowflake, Sparkles } from "lucide-react"
+import { motion } from "framer-motion"
+
+import { signIn } from "next-auth/react"
+import {api} from "@/app/_providers/trpc-provider";
 import {AppRoutes} from "@/routes"
-import { LoginFormValues, RegisterFormValues } from "@/lib/types"
 import Image from "next/image";
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { LoginSchema, RegisterSchema } from "@/lib/zod"
+import { LoginFormValues, RegisterFormValues } from "@/lib/types"
+
 
 
 
 
 export default function AuthPage() {
+
+  // HOOKS & STATE
   const [isLoading, setIsLoading] = useState(false)
   const [globalError, setGlobalError] = useState("")
   const router = useRouter()
-
   const [tab, setTab] = useState<"login" | "register">("login")
 
+  // MUTATIONS
+  const registerMutation = api.auth.register.useMutation({
+    onSuccess: () => {
+      router.push(AppRoutes.auth())
+      toast.success("Account created successfully! Please log in.")
+      resetRegisterForm()
+      setTab("login")
+    },
+    onError: (error) => {
+      setGlobalError(error.message)
+    }
+  })
+
+  // FORMS
   const {
     register: registerLogin,
     handleSubmit: handleLoginSubmit,
@@ -47,7 +65,7 @@ export default function AuthPage() {
     resolver: zodResolver(RegisterSchema),
   })
 
-  // 4. Логика входа
+  // HANDLERS
   const onLogin = async (data: LoginFormValues) => {
     setIsLoading(true)
     setGlobalError("")
@@ -72,19 +90,6 @@ export default function AuthPage() {
     }
   }
 
-  const registerMutation = api.auth.register.useMutation({
-    onSuccess: () => {
-      router.push(AppRoutes.auth())
-      toast.success("Account created successfully! Please log in.")
-      resetRegisterForm()
-      setTab("login")
-    },
-    onError: (error) => {
-      setGlobalError(error.message)
-    }
-  })
-
-  // 5. Логика регистрации
   const onRegister = async (data: RegisterFormValues) => {
     setIsLoading(true)
     setGlobalError("")
@@ -108,7 +113,6 @@ export default function AuthPage() {
             animate={{ opacity: 1, x: 0 }}
             className="hidden lg:block space-y-6"
           >
-            {/* ... (Оставлено без изменений для краткости) ... */}
             <div className="flex items-center gap-3">
               <Image
                 width={32}
@@ -130,7 +134,20 @@ export default function AuthPage() {
               Track, manage, and optimize all your subscriptions in one futuristic dashboard. Stay ahead of every
               payment with AI-powered insights.
             </p>
-            {/* Icons block preserved... */}
+            <div className="flex gap-4 pt-4">
+              <div className="glass-card border border-[#00f3ff]/20 p-4 rounded-lg">
+                <div className="text-3xl font-bold text-[#00f3ff] neon-text">100%</div>
+                <div className="text-sm text-slate-500">Secure</div>
+              </div>
+              <div className="glass-card border border-[#d946ef]/20 p-4 rounded-lg">
+                <div className="text-3xl font-bold text-[#d946ef]">AI</div>
+                <div className="text-sm text-slate-500">Powered</div>
+              </div>
+              <div className="glass-card border border-emerald-500/20 p-4 rounded-lg">
+                <div className="text-3xl font-bold text-emerald-400">24/7</div>
+                <div className="text-sm text-slate-500">Tracking</div>
+              </div>
+            </div>
           </motion.div>
 
           {/* Right Side - Auth Form */}

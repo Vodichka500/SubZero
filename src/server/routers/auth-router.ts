@@ -1,8 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "@/server/trpc";
-import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { saltAndHashPassword } from "@/lib/password"; // Ваша утилита с bcrypt
-import { RegisterSchema } from "@/lib/zod"; // Ваша Zod схема
+import { saltAndHashPassword } from "@/lib/password";
+import { RegisterSchema } from "@/lib/zod";
 
 export const authRouter = createTRPCRouter({
   register: publicProcedure

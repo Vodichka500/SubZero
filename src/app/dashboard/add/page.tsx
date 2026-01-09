@@ -1,18 +1,26 @@
 "use client"
-import Link from "next/link"
+
 import { useRouter } from "next/navigation"
+
 import { Card } from "@/components/ui/card"
 import { ArrowLeft, Sparkles } from "lucide-react"
 import { motion } from "framer-motion"
 import { SubscriptionForm } from "@/components/features/subscription/subscription-form"
-import {SubscriptionFormData} from "@/lib/types";
-import {AppRoutes} from "@/routes";
-import {api} from "@/app/_providers/trpc-provider";
-import { toast } from "sonner"
 import {BorderBeam} from "@/components/ui/border-beam";
+import { toast } from "sonner"
+
+import {api} from "@/app/_providers/trpc-provider";
+import Link from "next/link"
+import {AppRoutes} from "@/routes";
+
+import {SubscriptionFormData} from "@/lib/types";
 
 export default function AddSubscriptionPage() {
+
+  // HOOKS & STATE
   const router = useRouter()
+
+  // MUTATIONS
   const {
     mutate: createSubscription,
     isPending: isCreatingSubscription,
@@ -27,6 +35,7 @@ export default function AddSubscriptionPage() {
     }
   })
 
+  // HANDLERS
   const handleSubmit = (data: SubscriptionFormData) => {
     createSubscription(data)
   }
@@ -53,7 +62,7 @@ export default function AddSubscriptionPage() {
             <SubscriptionForm
               mode="create"
               onSubmit={handleSubmit}
-              isLoading={isCreatingSubscription} // <-- Передаем состояние загрузки
+              isLoading={isCreatingSubscription}
               onCancel={() => router.push(AppRoutes.dashboard())}
             />
             <BorderBeam

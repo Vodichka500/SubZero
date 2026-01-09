@@ -1,6 +1,9 @@
 "use client"
 
-import Link from "next/link"
+import { useEffect, useState } from "react"
+import { useForm, Controller } from "react-hook-form"
+import { useRouter } from "next/navigation"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,29 +23,44 @@ import { ArrowLeft, Bell, User, Mail, Sparkles, AlertTriangle, Trash2 } from "lu
 import { motion } from "framer-motion"
 import { AppRoutes } from "@/routes"
 import { toast } from "sonner"
-
-import { useForm, Controller } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { AccountSettingsSchema } from "@/lib/zod"
-import { api } from "@/app/_providers/trpc-provider"
-import { useRouter } from "next/navigation"
 import { AsyncView } from "@/components/features/async-view"
 import { AccountSettingSkeleton } from "@/components/skeletons/account-settings-skeleton"
-import { useEffect, useState } from "react"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { api } from "@/app/_providers/trpc-provider"
 import {signOut} from "next-auth/react";
+import Link from "next/link"
 
-
+import { AccountSettingsSchema } from "@/lib/zod"
 type AccountSettingsFormValues = z.infer<typeof AccountSettingsSchema>
+
+
+
+
+
 
 export default function SettingsPage() {
 
   const router = useRouter()
 
-  // Состояния для диалога удаления
+  // HOOKS & STATE
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const [deleteTimer, setDeleteTimer] = useState(5)
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+
+    if (deleteConfirmOpen && deleteTimer > 0) {
+      interval = setInterval(() => {
+        setDeleteTimer((prev) => prev - 1)
+      }, 1000)
+    }
+
+    return () => clearInterval(interval)
+  }, [deleteConfirmOpen, deleteTimer])
+
+  // QUERIES
   const {
     data: user,
     isLoading: isUserLoading,
@@ -50,6 +68,40 @@ export default function SettingsPage() {
     error: userLoadingError
   } = api.user.getMe.useQuery()
 
+  // MUTATIONS
+  const {
+    mutate: updateProfileMutation,
+    isPending: isUpdatingProfile,
+    isError: isUpdateProfileError,
+    error: updateProfileError
+  } = api.user.updateMe.useMutation({
+    onSuccess: (updatedUser) => {
+      toast.success("Settings updated successfully")
+      reset({
+        name: updatedUser.name,
+        email: updatedUser.email,
+        sendNotifications: updatedUser.sendNotifications,
+      })
+      router.refresh()
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to update profile")
+    }
+  })
+
+  const deleteAccountMutation = api.user.deleteMe.useMutation({
+    onSuccess: async () => {
+      toast.success("Account deleted successfully")
+      await signOut()
+      router.push(AppRoutes.landing())
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete account")
+      setDeleteConfirmOpen(false)
+    }
+  })
+
+  // FORMS
   const {
     register,
     handleSubmit,
@@ -73,57 +125,12 @@ export default function SettingsPage() {
     },
   })
 
-  // Логика таймера для удаления
-  useEffect(() => {
-    let interval: NodeJS.Timeout
 
-    if (deleteConfirmOpen && deleteTimer > 0) {
-      interval = setInterval(() => {
-        setDeleteTimer((prev) => prev - 1)
-      }, 1000)
-    }
-
-    return () => clearInterval(interval)
-  }, [deleteConfirmOpen, deleteTimer])
-
-  // Сброс таймера при закрытии/открытии
+  // HANDLERS
   const handleOpenDeleteDialog = () => {
     setDeleteTimer(5)
     setDeleteConfirmOpen(true)
   }
-
-  const {
-    mutate: updateProfileMutation,
-    isPending: isUpdatingProfile,
-    isError: isUpdateProfileError,
-    error: updateProfileError
-  } = api.user.updateMe.useMutation({
-    onSuccess: (updatedUser) => {
-      toast.success("Settings updated successfully")
-      reset({
-        name: updatedUser.name,
-        email: updatedUser.email,
-        sendNotifications: updatedUser.sendNotifications,
-      })
-      router.refresh()
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to update profile")
-    }
-  })
-
-  // Мутация для удаления (предполагаем наличие api.user.deleteMe)
-  const deleteAccountMutation = api.user.deleteMe.useMutation({
-    onSuccess: async () => {
-      toast.success("Account deleted successfully")
-      await signOut()
-      router.push(AppRoutes.landing())
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to delete account")
-      setDeleteConfirmOpen(false)
-    }
-  })
 
   const onSubmit = async (data: AccountSettingsFormValues) => {
     updateProfileMutation(data)
@@ -163,8 +170,6 @@ export default function SettingsPage() {
               user &&
               <>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  {/* ... Account Information и Notifications (без изменений) ... */}
-
                   {/* Account Information */}
                   <Card className="glass-card border border-[#00f3ff]/20 p-8">
                     <div className="flex items-center gap-3 mb-6">

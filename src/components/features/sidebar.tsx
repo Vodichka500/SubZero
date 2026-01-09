@@ -1,25 +1,31 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Snowflake, Plus, TrendingUp, SettingsIcon, Shield, LogOut } from "lucide-react"
+
+import { Plus, TrendingUp, SettingsIcon, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { cn } from "@/lib/utils"
-import { signOut } from "next-auth/react";
-import {api} from "@/app/_providers/trpc-provider";
-import {AsyncView} from "@/components/features/async-view";
-import {ProfileBadgeSkeleton} from "@/components/skeletons/profile-badge-skeleton";
+import { AsyncView } from "@/components/features/async-view";
+import { ProfileBadgeSkeleton } from "@/components/skeletons/profile-badge-skeleton";
+
 import {AppRoutes} from "@/routes";
 import Image from "next/image";
+import Link from "next/link"
+import { cn } from "@/lib/utils"
+import { signOut } from "next-auth/react";
+import { api } from "@/app/_providers/trpc-provider";
+
 
 interface SidebarProps {
   onLinkClick?: () => void
 }
 
 export function Sidebar({ onLinkClick }: SidebarProps) {
+
+  // HOOKS & STATE
   const pathname = usePathname()
 
+  // QUERIES
   const {
     data: user,
     isLoading: isUserLoading,
@@ -27,6 +33,8 @@ export function Sidebar({ onLinkClick }: SidebarProps) {
     error: userLoadingError
   } = api.user.getMe.useQuery()
 
+
+  // HELPERS
   const logout = async () => {
     await signOut()
   }
@@ -40,7 +48,7 @@ export function Sidebar({ onLinkClick }: SidebarProps) {
   return (
     <div className="flex flex-col h-full bg-[#050b1a]/80 backdrop-blur-xl border-r border-[#1e293b]">
       <div className="p-6 border-b border-[#1e293b]">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href={AppRoutes.dashboard()} className="flex items-center gap-2">
           <Image
             width={32}
             height={32}

@@ -1,10 +1,12 @@
 "use client"
 
 import { useMemo, useState } from "react"
+
 import { Card } from "@/components/ui/card"
-import type { Subscription } from "@/lib/types"
-import { ChevronLeft, ChevronRight, X } from "lucide-react" // Добавил иконку X
+import { ChevronLeft, ChevronRight, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+
+import { getPaymentsByDayInterval } from "@/lib/utils"
 import {
   startOfMonth,
   endOfMonth,
@@ -15,15 +17,18 @@ import {
   add,
   sub
 } from "date-fns"
-import { getPaymentsByDayInterval } from "@/lib/utils"
+
+import type { Subscription } from "@/lib/types"
+
 
 interface CalendarViewProps {
   subscriptions: Subscription[]
 }
 
 export function CalendarView({ subscriptions }: CalendarViewProps) {
+
+  // HOOKS & STATE
   const [viewDate, setViewDate] = useState(new Date())
-  // Добавляем стейт для выбранного дня (для мобильной версии)
   const [selectedDayDate, setSelectedDayDate] = useState<Date | null>(null)
 
   const { monthStart, monthEnd, daysInMonth, firstDayOfMonth } = useMemo(() => ({
@@ -37,6 +42,7 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
       getPaymentsByDayInterval(subscriptions, monthStart, monthEnd),
     [subscriptions, monthStart, monthEnd])
 
+  // HELPERS
   const nextMonth = () => setViewDate(prev => add(prev, { months: 1 }))
   const prevMonth = () => setViewDate(prev => sub(prev, { months: 1 }))
   const today = new Date()
@@ -84,16 +90,15 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
             return (
               <div
                 key={day}
-                onClick={() => setSelectedDayDate(dateOfCell)} // Обработчик клика для мобильных
+                onClick={() => setSelectedDayDate(dateOfCell)}
                 className={`aspect-square rounded-lg border transition-all ${
                   isToday
                     ? "border-[#00f3ff] bg-[#00f3ff]/10"
                     : isSelected
-                      ? "border-[#00f3ff]/50 bg-[#00f3ff]/5" // Подсветка при клике
+                      ? "border-[#00f3ff]/50 bg-[#00f3ff]/5" 
                       : "border-[#1e293b] bg-[#0a0f1e]/40 hover:bg-[#0a0f1e]/60"
                 } p-1 md:p-2 relative group cursor-pointer flex flex-col items-center`}
               >
-                {/* Центрируем контент и уменьшаем паддинги для мобилок */}
                 <div className="flex flex-col h-full w-full items-center">
                   <span className={`text-xs md:text-sm font-semibold ${isToday ? "text-[#00f3ff]" : "text-white"} mb-1`}>
                     {day}
@@ -104,7 +109,7 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
                       {payments.slice(0, 4).map((sub) => (
                         <div
                           key={sub.id}
-                          className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full shrink-0" // Чуть меньше точки на мобильных
+                          className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full shrink-0"
                           style={{ backgroundColor: sub.color || "#00f3ff" }}
                         />
                       ))}
@@ -113,7 +118,6 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
                 </div>
 
                 {/* --- DESKTOP TOOLTIP (HOVER) --- */}
-                {/* Скрыт на мобильных (hidden md:block), показывается при hover */}
                 {payments.length > 0 && (
                   <div className="hidden md:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                     <Card className="glass-card border border-[#00f3ff]/30 p-3 backdrop-blur-xl min-w-[180px] shadow-2xl">

@@ -1,15 +1,17 @@
 "use client"
 
-import type { Subscription } from "@/lib/types"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { MoreVertical, Snowflake, Trash2, Edit } from "lucide-react"
 import { motion } from "framer-motion"
+
 import {getDaysToNextPayment} from "@/lib/utils";
 import {DEFAULT_CURRENCY} from "@/lib/constants";
+
 import { Period } from "@prisma/client"
+import type { Subscription } from "@/lib/types"
 
 interface SubscriptionCardProps {
   subscription: Subscription
@@ -20,12 +22,7 @@ interface SubscriptionCardProps {
 
 export function SubscriptionCard({ subscription, onEdit, onFreeze, onDelete }: SubscriptionCardProps) {
 
-
-  const daysUntilPayment = getDaysToNextPayment(new Date(subscription.startDate), subscription.period, subscription.frequency)
-
-  const isUrgent = daysUntilPayment <= 3 && subscription.active
-
-  // HELPERS //
+  // HELPERS
   const getReadablePeriod = (period: Period, frequency: number) => {
     const periodNames: Record<Period, string> = {
       [Period.DAILY]: "day",
@@ -42,6 +39,9 @@ export function SubscriptionCard({ subscription, onEdit, onFreeze, onDelete }: S
       return `every ${frequency} ${name}s`
     }
   }
+
+  const daysUntilPayment = getDaysToNextPayment(new Date(subscription.startDate), subscription.period, subscription.frequency)
+  const isUrgent = daysUntilPayment <= 3 && subscription.active
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>

@@ -1,30 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
-import { Search, TrendingUp, DollarSign, List, Calendar, Snowflake } from "lucide-react"
-import { toast } from "sonner" // Предполагаем использование sonner для уведомлений
 
-// UI Components
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Skeleton } from "@/components/ui/skeleton"
-
-// Features
-import { SubscriptionCard } from "@/components/features/subscription/subscription-card"
-import { CalendarView } from "@/components/features/calendar-view"
-import { SubscriptionForm } from "@/components/features/subscription/subscription-form"
-import { AsyncView } from "@/components/features/async-view"
-import { SubscriptionsSkeleton } from "@/components/skeletons/subscriptions-skeleton"
-
-// Utils & TRPC
-import { api } from "@/app/_providers/trpc-provider"
-import { getExpectedMonthlyCost, getExpectedYearlyCost } from "@/lib/utils"
-import { MONTHS } from "@/lib/constants"
-import { SubscriptionFormData } from "@/lib/types"
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
   AlertDialogContent,
@@ -32,11 +9,34 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Skeleton } from "@/components/ui/skeleton"
+import { CalendarView } from "@/components/features/calendar-view"
+import { SubscriptionForm } from "@/components/features/subscription/subscription-form"
+import { AsyncView } from "@/components/features/async-view"
+import { SubscriptionsSkeleton } from "@/components/skeletons/subscriptions-skeleton"
+import Stats from "@/components/features/dashboard/stats";
+import { SubscriptionListView } from "@/components/features/dashboard/subscription-list-view"
+import { List, Calendar } from "lucide-react"
+import { toast } from "sonner"
+import { motion } from "framer-motion"
+
+import { api } from "@/app/_providers/trpc-provider"
+import { getExpectedMonthlyCost, getExpectedYearlyCost } from "@/lib/utils"
+
+import { SubscriptionFormData } from "@/lib/types"
+
 
 export default function DashboardPage() {
-  const utils = api.useUtils()
 
-  // --- Queries ---
+  // HOOKS & STATE
+  const utils = api.useUtils()
+  const [view, setView] = useState<"list" | "calendar">("list")
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  // QUERIES
   const {
     data: subscriptions = [],
     isLoading: isSubscriptionsLoading,
@@ -51,7 +51,7 @@ export default function DashboardPage() {
     error: userLoadingError
   } = api.user.getMe.useQuery()
 
-  // --- Mutations ---
+  // MUTATIONS
   const { mutate: updateSubscription, isPending: isUpdating } = api.subscription.update.useMutation({
     onMutate: async (variables) => {
       await utils.subscription.getAll.cancel()
@@ -96,37 +96,20 @@ export default function DashboardPage() {
     },
   })
 
-  // --- State ---
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState<string>("all")
-  const [view, setView] = useState<"list" | "calendar">("list")
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  // --- Helpers ---
+  // HELPERS
   const totalMonthlySpend = getExpectedMonthlyCost(subscriptions)
   const totalYearlySpend = getExpectedYearlyCost(subscriptions)
-
-  const filteredSubscriptions = subscriptions.filter((sub) => {
-    const matchesSearch = sub.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = selectedCategory === "all" || sub.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
-
   const editingSubscription = subscriptions.find(s => s.id === editingId)
 
-  // --- Handlers ---
-
+  // HANDLERS
   const handleFreeze = (id: string) => {
     const sub = subscriptions.find((s) => s.id === id)
     if (!sub) return
-
-    // Если активно -> false (freeze), если неактивно -> true (unfreeze)
     updateSubscription({
       id,
       data: { active: !sub.active }
     })
-
     const action = sub.active ? "Frozen" : "Unfrozen"
     toast.info(`Subscription ${action}`)
   }
@@ -171,36 +154,8 @@ export default function DashboardPage() {
       >
         {subscriptions && (
           <>
-            {/* Stats Row */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="glass-card border border-[#00f3ff]/30 p-6 hover:shadow-[0_0_25px_rgba(0,243,255,0.4)] transition-all bg-transparent">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-[#00f3ff]/10 flex items-center justify-center">
-                    <DollarSign className="w-8 h-8 text-[#00f3ff]" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-500 uppercase tracking-wider mb-1">
-                      Expenses in {MONTHS[new Date().getMonth()]}
-                    </p>
-                    <p className="text-4xl font-bold text-[#00f3ff] neon-text">${totalMonthlySpend.toFixed(2)}</p>
-                  </div>
-                </div>
-              </Card>
+            <Stats totalMonthlySpend={totalMonthlySpend} totalYearlySpend={totalYearlySpend}/>
 
-              <Card className="glass-card border border-[#d946ef]/30 p-6 hover:shadow-[0_0_25px_rgba(217,70,239,0.4)] transition-all bg-transparent">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-[#d946ef]/10 flex items-center justify-center">
-                    <TrendingUp className="w-8 h-8 text-[#d946ef]" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-500 uppercase tracking-wider mb-1">Yearly Projection</p>
-                    <p className="text-4xl font-bold text-[#d946ef]">${totalYearlySpend.toFixed(2)}</p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-
-            {/* Tabs & Filters */}
             <Tabs value={view} onValueChange={(v) => setView(v as "list" | "calendar")} className="w-full">
               <TabsList className="bg-[#0a0f1e]/60 border border-[#00f3ff]/20">
                 <TabsTrigger value="list" className="data-[state=active]:bg-[#00f3ff]/20 data-[state=active]:text-[#00f3ff]">
@@ -211,49 +166,14 @@ export default function DashboardPage() {
                 </TabsTrigger>
               </TabsList>
 
-              {view === "list" && (
-                <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                    <Input
-                      placeholder="Search subscriptions..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-[#0a0f1e]/60 border-[#00f3ff]/20 text-white focus:border-[#00f3ff]"
-                    />
-                  </div>
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="w-full sm:w-48 bg-[#0a0f1e]/60 border-[#00f3ff]/20 text-white">
-                      <SelectValue placeholder="Category" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#0a0f1e] border-[#00f3ff]/20 text-white">
-                      <SelectItem value="all">All Categories</SelectItem>
-                      <SelectItem value="ENTERTAINMENT">Entertainment</SelectItem>
-                      <SelectItem value="SOFTWARE">Software</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
+              {/* View Content */}
               <TabsContent value="list" className="mt-6">
-                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {filteredSubscriptions.map((sub, i) => (
-                    <motion.div key={sub.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.05 }}>
-                      <SubscriptionCard
-                        subscription={sub}
-                        onEdit={(id) => setEditingId(id)}
-                        onFreeze={handleFreeze}
-                        onDelete={(id) => setDeletingId(id)}
-                      />
-                    </motion.div>
-                  ))}
-                </div>
-                {filteredSubscriptions.length === 0 && (
-                  <div className="text-center py-20">
-                    <Snowflake className="w-12 h-12 text-slate-800 mx-auto mb-4" />
-                    <p className="text-slate-500">No subscriptions found</p>
-                  </div>
-                )}
+                <SubscriptionListView
+                  subscriptions={subscriptions}
+                  onEdit={setEditingId}
+                  onFreeze={handleFreeze}
+                  onDelete={setDeletingId}
+                />
               </TabsContent>
 
               <TabsContent value="calendar" className="mt-6">
@@ -286,7 +206,6 @@ export default function DashboardPage() {
         </DialogContent>
       </Dialog>
 
-    {/* Delete Confirmation Modal */}
       {/* Delete Confirmation Modal */}
       <AlertDialog open={!!deletingId} onOpenChange={(open) => !open && setDeletingId(null)}>
         <AlertDialogContent className="glass-card border border-red-500/30 bg-[#02040a]/90 backdrop-blur-xl text-white max-w-md">

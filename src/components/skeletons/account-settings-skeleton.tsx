@@ -1,6 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card } from "@/components/ui/card"
-import { ArrowLeft } from "lucide-react"
 
 export function AccountSettingSkeleton() {
   return (

@@ -17,8 +17,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Вспомогательная функция для прибавления времени к дате.
- * Использует объект Duration из date-fns.
+ * Function to add a specific period and frequency to a date.
+ * @param date
+ * @param period
+ * @param frequency
  */
 const addPeriod = (date: Date, period: Period, frequency: number): Date => {
   const durationMap: Record<Period, Duration> = {
@@ -31,7 +33,9 @@ const addPeriod = (date: Date, period: Period, frequency: number): Date => {
 };
 
 /**
- * Считает сумму платежей по ОДНОЙ подписке внутри заданного интервала.
+ * Calculates the total cost of a subscription within a given interval.
+ * @param sub
+ * @param interval
  */
 const calculateSubscriptionCostInInterval = (sub: Subscription, interval: Interval): number => {
   if (!sub.active || sub.frequency <= 0) return 0;
@@ -39,12 +43,10 @@ const calculateSubscriptionCostInInterval = (sub: Subscription, interval: Interv
   let total = 0;
   let nextPayment = new Date(sub.startDate);
 
-  // Проматываем до начала интервала
   while (nextPayment < interval.start) {
     nextPayment = addPeriod(nextPayment, sub.period, sub.frequency);
   }
 
-  // Считаем все платежи внутри интервала
   while (nextPayment <= interval.end) {
     if (isWithinInterval(nextPayment, interval)) {
       total += sub.price;
@@ -56,7 +58,10 @@ const calculateSubscriptionCostInInterval = (sub: Subscription, interval: Interv
 };
 
 /**
- * Дни до следующего платежа
+ * Days until the next payment
+ * @param startDate
+ * @param period
+ * @param frequency
  */
 export const getDaysToNextPayment = (startDate: Date, period: Period, frequency: number): number => {
   if (frequency <= 0) return 0;
@@ -72,7 +77,8 @@ export const getDaysToNextPayment = (startDate: Date, period: Period, frequency:
 };
 
 /**
- * Ожидаемые затраты за месяц
+ * Expected monthly cost
+ * @param subscriptions
  */
 export const getExpectedMonthlyCost = (subscriptions: Subscription[]): number => {
   const now = new Date();
@@ -84,7 +90,8 @@ export const getExpectedMonthlyCost = (subscriptions: Subscription[]): number =>
 };
 
 /**
- * Ожидаемые затраты за год
+ * Expected yearly cost
+ * @param subscriptions
  */
 export const getExpectedYearlyCost = (subscriptions: Subscription[]): number => {
   const now = new Date();
@@ -96,9 +103,11 @@ export const getExpectedYearlyCost = (subscriptions: Subscription[]): number => 
 };
 
 
-
 /**
- * Генерирует карту платежей по дням для заданного интервала (например, месяца)
+ * Get payments by day interval
+ * @param subscriptions
+ * @param start
+ * @param end
  */
 export const getPaymentsByDayInterval = (
   subscriptions: Subscription[],
@@ -113,12 +122,10 @@ export const getPaymentsByDayInterval = (
 
     let currentPayment = new Date(sub.startDate)
 
-    // 1. Проматываем до начала интервала (если старт подписки был давно)
     while (currentPayment < start) {
       currentPayment = addPeriod(currentPayment, sub.period, sub.frequency)
     }
 
-    // 2. Итерируем, пока не выйдем за пределы конца интервала
     while (currentPayment <= end) {
       if (isWithinInterval(currentPayment, interval)) {
         const day = currentPayment.getDate()

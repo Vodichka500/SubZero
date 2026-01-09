@@ -1,14 +1,17 @@
 'use client'
 
-import { Sidebar } from "@/components/features/sidebar"
+import { useState } from "react";
+
 import {Sheet, SheetContent, SheetTitle, SheetTrigger} from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
-import { Menu, Snowflake } from "lucide-react"
-import { useState } from "react";
+import { Sidebar } from "@/components/features/sidebar"
+import { Menu } from "lucide-react"
+
 import Image from "next/image";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 
+  // HOOKS & STATE
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (

@@ -44,7 +44,10 @@ export const subscriptionRouter = createTRPCRouter({
     }))
     .mutation(async ({ ctx, input }) => {
       const edited = await ctx.db.subscription.update({
-        where: { id: input.id },
+        where: {
+          id: input.id,
+          userId: ctx.session.user.id
+        },
         data: input.data,
       });
       if (!edited) {
@@ -57,11 +60,10 @@ export const subscriptionRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.object({ id: z.cuid() }))
     .mutation(async ({ ctx, input }) => {
-      // ДОБАВИТЬ await ТУТ
       const deleted = await ctx.db.subscription.delete({
         where: {
           id: input.id,
-          userId: ctx.session.user.id // Хорошая практика: проверять владельца при удалении
+          userId: ctx.session.user.id
         },
       });
 

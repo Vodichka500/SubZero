@@ -64,13 +64,13 @@ enum Period {
 }
 
 enum Category {
-  ENTERTAINMENT // Netflix, Spotify
-  SOFTWARE // Adobe, JetBrains, AI Tools
-  HEALTH // Gym, Supplements
-  FINANCE // Banking, Investments
-  TRANSPORT // Uber Pass, Car lease
-  EDUCATION // Courses, Books
-  UTILITIES // Rent, Phone, Internet
-  SHOPPING // Amazon Prime
+  ENTERTAINMENT
+  SOFTWARE
+  HEALTH
+  FINANCE
+  TRANSPORT
+  EDUCATION
+  UTILITIES
+  SHOPPING
   OTHER
 }

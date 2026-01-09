@@ -1,7 +1,9 @@
 import React from 'react';
+
+import {Button} from "@/components/ui/button";
+
 import Link from "next/link";
 import {AppRoutes} from "@/routes";
-import {Button} from "@/components/ui/button";
 
 const PageFooter = () => {
   return (

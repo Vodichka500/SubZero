@@ -1,38 +1,27 @@
 "use client"
 
-import {useRef, useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
 import { useForm, Controller, type Resolver } from "react-hook-form"
-import {
-  Sparkles,
-  Loader2,
-  Calendar as CalendarIcon,
-  Plus,
-} from "lucide-react"
-import { toast } from "sonner"
-import EmojiPicker, { Theme } from "emoji-picker-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
+import {Sparkles, Loader2, Calendar as CalendarIcon, Plus,} from "lucide-react"
+import { toast } from "sonner"
+import EmojiPicker, { Theme } from "emoji-picker-react"
 
 import { cn } from "@/lib/utils"
+import {CATEGORY_VALUES, PERIOD_VALUES, PRESET_COLORS} from "@/lib/constants"
+import { api } from "@/app/_providers/trpc-provider"
+import { zodResolver } from "@hookform/resolvers/zod"
+
 import { SubscriptionFormData } from "@/lib/types"
 import { SubscriptionFormSchema } from "@/lib/zod"
 import {CategoryType, PeriodType} from "@/generated/zod"
-import { CATEGORY_VALUES, PERIOD_VALUES } from "@/lib/constants"
-import { api } from "@/app/_providers/trpc-provider"
 
-
-// Пресеты цветов вынесем в константу, чтобы сверять с ними выбор
-const PRESET_COLORS = ["#E50914", "#1DB954", "#00f3ff", "#d946ef", "#FF9900", "#F59E0B", "#EF4444"]
 
 interface SubscriptionFormProps {
   mode: "create" | "edit"
@@ -42,12 +31,6 @@ interface SubscriptionFormProps {
   onCancel?: () => void
 }
 
-const formatDateForInput = (date?: Date | string) => {
-  if (!date) return new Date().toISOString().split("T")[0]
-  const d = new Date(date)
-  return isNaN(d.getTime()) ? new Date().toISOString().split("T")[0] : d.toISOString().split("T")[0]
-}
-
 export function SubscriptionForm({
                                    mode,
                                    initialData,
@@ -55,9 +38,11 @@ export function SubscriptionForm({
                                    isLoading = false,
                                    onCancel,
                                  }: SubscriptionFormProps) {
+
+  // HOOKS & STATE
   const [isEmojiOpen, setIsEmojiOpen] = useState(false)
 
-
+  // MUTATIONS
   const { mutate: generateDetails, isPending: isAIGenerating } = api.subscription.getAiDetails.useMutation({
     onSuccess: (data) => {
       // Устанавливаем значения, полученные от AI
@@ -78,8 +63,7 @@ export function SubscriptionForm({
     }
   })
 
-  const isBusy = isLoading || isAIGenerating
-
+  // FORMS
   const {
     register,
     handleSubmit,
@@ -116,11 +100,20 @@ export function SubscriptionForm({
     },
   })
 
+  // HELPERS
+  const formatDateForInput = (date?: Date | string) => {
+    if (!date) return new Date().toISOString().split("T")[0]
+    const d = new Date(date)
+    return isNaN(d.getTime()) ? new Date().toISOString().split("T")[0] : d.toISOString().split("T")[0]
+  }
+
   const nameValue = watch("name")
   const colorValue = watch("color")
   const iconValue = watch("icon")
   const isCustomColor = !PRESET_COLORS.includes(colorValue!)
+  const isBusy = isLoading || isAIGenerating
 
+  // HANDLERS
   const handleAIAutofill = async () => {
     if (!nameValue) return
     generateDetails({ name: nameValue })
@@ -135,7 +128,7 @@ export function SubscriptionForm({
       onSubmit={handleSubmit(onSubmit, onError)}
       className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-lg mx-auto rounded-2xl"
     >
-      {/* --- Section 1: Name & AI --- */}
+      {/* Name & AI */}
       <div className="space-y-2">
         <Label htmlFor="name">Subscription name</Label>
         <div className="flex gap-2 items-start">
@@ -150,7 +143,6 @@ export function SubscriptionForm({
             {errors.name && <p className="text-red-400 text-xs">{errors.name.message}</p>}
           </div>
           <div className="relative flex items-center justify-center">
-            {/* 1. Добавляем relative и z-10, чтобы кнопка была ПОВЕРХ конфетти */}
             <Button
               type="button"
               variant="outline"
@@ -169,7 +161,7 @@ export function SubscriptionForm({
         </div>
       </div>
 
-      {/* --- Section 2: Price & Category --- */}
+      {/* Price & Category */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="price">Price</Label>
@@ -210,7 +202,7 @@ export function SubscriptionForm({
 
       <Separator className="bg-slate-800 my-6"/>
 
-      {/* --- Section 3: Billing Cycle & First Payment --- */}
+      {/* Billing Cycle & First Payment */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="space-y-2">
           <Label>Billing Cycle</Label>
@@ -270,9 +262,8 @@ export function SubscriptionForm({
         </div>
       </div>
 
-      {/* --- Section 4: Icon & Color --- */}
+      {/* Icon & Color */}
       <div className="grid grid-cols-[auto_1fr] gap-6 items-start">
-        {/* --- EMOJI PICKER --- */}
         <div className="space-y-2 flex flex-col">
           <Label>Icon</Label>
           <Popover open={isEmojiOpen} onOpenChange={setIsEmojiOpen}>
@@ -328,7 +319,6 @@ export function SubscriptionForm({
             <div
               className={cn(
                 "relative w-6 h-6 shrink-0 rounded-full flex items-center justify-center transition-all overflow-hidden",
-                // Add ring and scale if a custom color is selected
                 isCustomColor
                   ? "ring-2 ring-white ring-offset-1 ring-offset-[#0a0f1e] scale-110"
                   : "border border-dashed border-slate-400 opacity-70 hover:opacity-100"
@@ -343,7 +333,6 @@ export function SubscriptionForm({
                 disabled={isBusy}
                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full p-0 border-none z-10"
               />
-              {/* Plus icon is visible only if color is NOT custom (selection mode) */}
               {!isCustomColor && (
                 <Plus className="w-3 h-3 text-slate-400 pointer-events-none"/>
               )}
@@ -352,7 +341,7 @@ export function SubscriptionForm({
         </div>
       </div>
 
-      {/* --- Section 5: Buttons --- */}
+      {/* Buttons */}
       <div className="grid grid-cols-2 gap-4 pt-4">
         {onCancel && (
           <Button

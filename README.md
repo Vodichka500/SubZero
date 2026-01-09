@@ -30,7 +30,8 @@ This project uses the **T3 Stack** philosophy (Next.js + tRPC + Prisma) paired w
 * **Data Fetching:** [tRPC](https://trpc.io/) (E2E type-safe APIs)
 * **Authentication:** [NextAuth.js](https://next-auth.js.org/)
 * **UI Library:** [Shadcn UI](https://ui.shadcn.com/) + Tailwind CSS
-* **Forms:** [React Hook Form](https://react-hook-form.com/)
+* **Forms:** [React Hook Form](https://react-hook-form.com/) + Zod 
+* **Types Auto Generation:** [zod-prisma-types](https://www.npmjs.com/package/zod-prisma-types) 
 * **AI Integration:** OpenAI API / Vercel AI SDK
 
 ### Architecture Decision: Why this stack?

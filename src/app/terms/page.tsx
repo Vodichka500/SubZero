@@ -6,6 +6,8 @@ import PageFooter from "@/components/features/landing/page-footer";
 export const dynamic = "force-dynamic"
 
 export default async function TermsPage() {
+
+  // QUERIES
   const terms = await trpc.terms.getActualTerms();
 
   return (

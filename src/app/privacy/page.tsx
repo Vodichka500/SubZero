@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { Shield, Lock, Eye, Key, Server, CheckCircle, UserCheck } from "lucide-react"
+import { Shield, Lock, Eye, Server, CheckCircle, UserCheck } from "lucide-react"
 import { motion } from "framer-motion"
 import PageHeader from "@/components/features/landing/page-header";
 

@@ -1,17 +1,17 @@
-// middleware.ts
 import { auth } from "@/auth";
+import {AppRoutes} from "@/routes";
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const { pathname } = req.nextUrl;
 
 
-  if (pathname.startsWith("/dashboard") && !isLoggedIn) {
-    return Response.redirect(new URL("/auth", req.nextUrl));
+  if (pathname.startsWith(AppRoutes.dashboard()) && !isLoggedIn) {
+    return Response.redirect(new URL(AppRoutes.auth(), req.nextUrl));
   }
 
-  if (pathname.startsWith("/auth") && isLoggedIn) {
-    return Response.redirect(new URL("/dashboard", req.nextUrl));
+  if (pathname.startsWith(AppRoutes.auth()) && isLoggedIn) {
+    return Response.redirect(new URL(AppRoutes.dashboard(), req.nextUrl));
   }
 });
 

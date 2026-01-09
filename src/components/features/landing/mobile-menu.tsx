@@ -1,9 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, ChevronRight } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -12,14 +11,20 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
+import { Menu, ChevronRight } from "lucide-react"
+
+import Link from "next/link"
 import { AppRoutes } from "@/routes";
 import { cn } from "@/lib/utils"
+
 
 interface MobileMenuProps {
   links?: Array<{ href: string; label: string }>
 }
 
 export function MobileMenu({ links }: MobileMenuProps) {
+
+  // HOOKS & STATE
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
