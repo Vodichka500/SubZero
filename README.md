@@ -35,7 +35,7 @@ This project uses the **T3 Stack** philosophy (Next.js + tRPC + Prisma) paired w
 * **AI Integration:** OpenAI API / Vercel AI SDK
 
 ### Architecture Decision: Why this stack?
-1.  **NextAuth + Supabase:** While Supabase offers native auth, the requirements strictly requested **NextAuth**. I implemented a custom adapter pattern where NextAuth handles the session state, while Prisma secures data access by enforcing `userId` checks on every query.
+1.  **Supabase:** 
 2.  **tRPC:** Chosen over REST/GraphQL to provide seamless type safety between the backend functions and frontend components, speeding up development and reducing runtime errors.
 3.  **Prisma:** Used to interact with the Supabase Postgres instance, allowing for clean schema definition and type-safe database queries without raw SQL.
 
