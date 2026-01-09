@@ -11,7 +11,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-[#02040a] flex">
+    <div className="h-screen overflow-auto bg-[#02040a] flex">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:block w-80 shrink-0">
         <Sidebar />

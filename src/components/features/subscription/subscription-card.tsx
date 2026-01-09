@@ -36,7 +36,6 @@ export function SubscriptionCard({ subscription, onEdit, onFreeze, onDelete }: S
 
     const name = periodNames[period] ?? "period"
 
-    // Выбираем форму: "every" для 1, "every X" для >1
     if (frequency === 1) {
       return `every ${name}`
     } else {

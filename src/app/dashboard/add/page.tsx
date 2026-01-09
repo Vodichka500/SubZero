@@ -1,19 +1,18 @@
 "use client"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Snowflake, ArrowLeft, Sparkles } from "lucide-react"
+import { ArrowLeft, Sparkles } from "lucide-react"
 import { motion } from "framer-motion"
 import { SubscriptionForm } from "@/components/features/subscription/subscription-form"
 import {SubscriptionFormData} from "@/lib/types";
 import {AppRoutes} from "@/routes";
 import {api} from "@/app/_providers/trpc-provider";
 import { toast } from "sonner"
+import {BorderBeam} from "@/components/ui/border-beam";
 
 export default function AddSubscriptionPage() {
   const router = useRouter()
-
   const {
     mutate: createSubscription,
     isPending: isCreatingSubscription,
@@ -29,7 +28,6 @@ export default function AddSubscriptionPage() {
   })
 
   const handleSubmit = (data: SubscriptionFormData) => {
-    console.log("GOOD")
     createSubscription(data)
   }
 
@@ -51,12 +49,19 @@ export default function AddSubscriptionPage() {
             <p className="text-slate-400">Let our AI help you track your spending</p>
           </div>
 
-          <Card className="glass-card border border-[#00f3ff]/20 p-8">
+          <Card className="glass-card border border-[#00f3ff]/20 p-8 overflow-hidden">
             <SubscriptionForm
               mode="create"
               onSubmit={handleSubmit}
               isLoading={isCreatingSubscription} // <-- Передаем состояние загрузки
               onCancel={() => router.push(AppRoutes.dashboard())}
+            />
+            <BorderBeam
+              duration={6}
+              delay={3}
+              size={400}
+              borderWidth={2}
+              className="from-transparent via-[#00f3ff] to-transparent"
             />
           </Card>
 
