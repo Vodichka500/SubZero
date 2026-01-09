@@ -29,6 +29,17 @@ The UI follows a dark **Ice / Cyber** aesthetic with electric cyan accents and i
 
 ---
 
+### 🔐 Authentication Note
+
+The application uses **NextAuth.js with Credentials Provider**. A full authentication flow (registration and login) is implemented, however a **test user** is provided for quick access:
+
+**Email:** `test@example.com`  
+**Password:** `password`
+
+You may either use this account or create a new one via the registration form.
+
+---
+
 ## ✨ Key Features
 
 - **🔐 Authentication & Authorization**
